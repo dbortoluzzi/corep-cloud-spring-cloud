@@ -439,6 +439,7 @@ Press `Ctrl+C` in the terminal where the service is running.
 
 ## Documentation
 
+- **[HOW_IT_WORKS.md](HOW_IT_WORKS.md)** - **How Consul Service Discovery and Spring Cloud Gateway work** (detailed explanation)
 - **[test/TESTING.md](test/TESTING.md)** - Quick testing guide with essential commands
 - **[test/README.md](test/README.md)** - Detailed testing guide and scripts
 - **[test/DEMO_GUIDE.md](test/DEMO_GUIDE.md)** - Step-by-step demo presentation guide
