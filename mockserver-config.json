@@ -1,0 +1,16 @@
+[
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/api/notifications/send"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": "{\"notificationId\":\"550e8400-e29b-41d4-a716-446655440000\",\"status\":\"SENT\",\"message\":\"Notification sent successfully\",\"sentAt\":\"2025-11-24T17:00:00\"}"
+    }
+  }
+]
+

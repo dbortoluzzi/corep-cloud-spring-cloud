@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    consul:
+      host: consul
+      port: 8500
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    org.springframework.cloud.consul: INFO
+

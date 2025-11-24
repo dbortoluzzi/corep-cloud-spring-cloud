@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: gateway-service
+  
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        register: true
+        prefer-ip-address: true
+    
+    gateway:
+      discovery:
+        locator:
+          enabled: true  # Enable Consul service discovery for routing
+          lower-case-service-id: true
+      routes:
+        - id: user-service-route
+          uri: lb://user-service  # 'lb://' = load-balanced via Consul discovery
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=1  # Remove /api/users prefix, forward /users/** to user-service
+
+server:
+  port: 8080  # Single entry point for all clients
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG  # See routing decisions
+    org.springframework.cloud.consul: DEBUG  # See Consul lookups
+    com.example.gateway: INFO
+

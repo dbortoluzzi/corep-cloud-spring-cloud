@@ -1,0 +1,90 @@
+spring:
+  application:
+    name: user-service
+  
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        register: true  # THIS REGISTERS THE SERVICE IN CONSUL
+        prefer-ip-address: true
+        
+  datasource:
+    url: jdbc:h2:mem:usersdb
+    driver-class-name: org.h2.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+
+server:
+  port: 8081  # Different port from Gateway
+
+external:
+  notification-service:
+    url: http://localhost:9090
+
+resilience4j:
+  # Configure aspect order: Circuit Breaker executes FIRST (order 1), Retry executes AFTER (order 2)
+  # This ensures Circuit Breaker blocks immediately when OPEN, before Retry can retry
+  circuitbreaker:
+    circuit-breaker-aspect-order: 1  # Circuit Breaker executes FIRST
+    instances:
+      notification-service:
+        # Circuit Breaker configuration
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 3  # Minimum 3 calls before opening (lowered for testing)
+        failure-rate-threshold: 50  # Opens after 50% failures
+        wait-duration-in-open-state: 30s  # Wait 30s before transitioning to HALF_OPEN
+        permitted-number-of-calls-in-half-open-state: 3  # Test calls in half-open
+        slow-call-duration-threshold: 2s  # Threshold for slow calls
+        slow-call-rate-threshold: 50  # Considers slow calls > 2s
+        record-exceptions:
+          - java.io.IOException
+          - org.springframework.web.client.RestClientException
+          - feign.FeignException
+          - feign.RetryableException
+          - java.lang.RuntimeException
+        ignore-exceptions:
+          - java.lang.IllegalArgumentException
+  
+  retry:
+    retry-aspect-order: 2  # Retry executes AFTER Circuit Breaker
+    instances:
+      notification-service:
+        # Retry configuration
+        max-attempts: 3  # Maximum 3 attempts (1 initial + 2 retries)
+        wait-duration: 500ms  # Fixed wait between retries (500ms between each attempt)
+        retry-exceptions:
+          - java.io.IOException
+          - org.springframework.web.client.RestClientException
+          - feign.FeignException
+        ignore-exceptions:
+          - java.lang.IllegalArgumentException
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException  # Don't retry when CB is OPEN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.example.userservice: INFO
+    org.springframework.cloud: DEBUG
+    org.springframework.cloud.consul: DEBUG  # See Consul registration logs
+    io.github.resilience4j: DEBUG  # See Resilience4j retry/circuit breaker events
+

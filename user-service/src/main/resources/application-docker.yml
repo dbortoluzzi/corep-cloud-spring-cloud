@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    consul:
+      host: consul
+      port: 8500
+
+  datasource:
+    url: jdbc:h2:mem:usersdb
+
+external:
+  notification-service:
+    url: http://notification-mock:1080
+
+logging:
+  level:
+    org.springframework.cloud.consul: INFO
+
