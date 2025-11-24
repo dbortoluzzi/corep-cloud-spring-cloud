@@ -1,4 +1,4 @@
-# Spring Boot 3 Minimal Monolith - Spring Cloud Demo
+# Spring Boot 3 - Spring Cloud Demo
 
 A minimal Spring Boot 3 application demonstrating Spring Cloud capabilities for building cloud-ready microservices.
 
@@ -177,7 +177,7 @@ docker compose down -v
 
 ```bash
 # Using Docker
-docker run -d --name consul -p 8500:8500 consul:latest agent -server -ui -bootstrap-expect=1 -client=0.0.0.0
+docker run -d --name consul -p 8500:8500 hashicorp/consul:1.17 agent -server -ui -bootstrap-expect=1 -client=0.0.0.0
 
 # Or download and run Consul binary
 # https://www.consul.io/downloads
@@ -189,7 +189,7 @@ docker run -d --name consul -p 8500:8500 consul:latest agent -server -ui -bootst
 docker run -d --name notification-mock -p 9090:1080 \
   -v $(pwd)/mockserver-config.json:/config/mockserver-init.json \
   -e MOCKSERVER_INITIALIZATION_JSON_PATH=/config/mockserver-init.json \
-  mockserver/mockserver:latest
+  mockserver/mockserver:5.15.0
 ```
 
 #### Step 3: Start User Service

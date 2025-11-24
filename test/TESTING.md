@@ -136,7 +136,7 @@ curl -X POST http://localhost:8080/api/users \
 - `❌ RETRY FAILED` - After all retries exhausted
 - `⚠️ All retry attempts failed` - Fallback called
 
-**Total time**: ~2-3 seconds (3 attempts with exponential backoff)
+**Total time**: ~2-3 seconds (3 attempts with fixed 500ms interval between each)
 
 ### Complete Retry Test
 
@@ -227,18 +227,13 @@ docker compose logs user-service --tail=50 | grep -E "cbafter|RETRY|Call not per
 
 ## Disable Retry or Circuit Breaker
 
-To temporarily disable Retry or Circuit Breaker, modify `application.yml`:
+To disable Retry or Circuit Breaker, you must comment out the annotations in `NotificationService.java`. See `test/HOW_TO_DISABLE.md` for detailed instructions.
 
-```yaml
-resilience4j:
-  circuit-breaker-enabled: false  # Disable Circuit Breaker
-  retry-enabled: false            # Disable Retry
-```
+Alternatively, you can configure YAML to effectively disable them:
+- **Retry**: Set `max-attempts: 1` in `application.yml`
+- **Circuit Breaker**: Set very high thresholds (e.g., `failure-rate-threshold: 100`)
 
-Then restart the service:
-```bash
-docker compose restart user-service
-```
+See `test/HOW_TO_DISABLE.md` for complete instructions.
 
 ## Is it correct to use Retry and Circuit Breaker together?
 

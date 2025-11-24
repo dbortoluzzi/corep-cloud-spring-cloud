@@ -121,7 +121,7 @@ Quick script to filter and show relevant logs:
 
 ### Retry Behavior
 
-- **When service is down:** Retry makes 3 attempts with exponential backoff
+- **When service is down:** Retry makes 3 attempts with fixed 500ms interval between each
 - **Total time:** ~2-3 seconds per call
 - **Use case:** Handles transient errors (network issues, temporary unavailability)
 

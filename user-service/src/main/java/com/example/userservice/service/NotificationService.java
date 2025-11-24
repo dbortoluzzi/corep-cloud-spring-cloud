@@ -40,7 +40,7 @@ public class NotificationService {
      *    - If OPEN: blocks immediately, throws CallNotPermittedException, goes to fallback (NO retry)
      *    - If CLOSED: allows call to proceed to Retry
      * 2. Retry executes AFTER Circuit Breaker (only if CB is CLOSED)
-     *    - Makes 3 attempts with exponential backoff
+     *    - Makes 3 attempts with fixed interval (500ms between attempts)
      *    - If all retries fail, Circuit Breaker records the failure
      * 3. After N failures, Circuit Breaker opens
      * 
@@ -51,7 +51,7 @@ public class NotificationService {
      * - Fallback is called directly
      * 
      * When Circuit Breaker is CLOSED:
-     * - Retry attempts 3 times with exponential backoff
+     * - Retry attempts 3 times with fixed interval (500ms between attempts)
      * - If all retries fail, Circuit Breaker records the failure
      * - After N failures, Circuit Breaker opens
      * 

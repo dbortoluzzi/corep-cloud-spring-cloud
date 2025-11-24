@@ -44,14 +44,14 @@ Show that the system automatically retries failed calls 3 times.
 
 - **Retry Pattern:** Automatically retries failed calls
 - **3 Attempts:** Initial call + 2 retries = 3 total attempts
-- **Exponential Backoff:** Wait time increases between retries (500ms, 1s)
+- **Fixed Interval:** Wait time is fixed at 500ms between retries
 - **Use Case:** Handles transient errors (network issues, temporary unavailability)
 
 ### Key Points to Highlight
 
 - ✅ System is resilient to temporary failures
 - ✅ Automatic retry without manual intervention
-- ✅ Exponential backoff prevents overwhelming the service
+- ✅ Fixed interval prevents overwhelming the service
 - ✅ User is still created even if notification fails (graceful degradation)
 
 ## Demo 2: Circuit Breaker
@@ -175,7 +175,7 @@ A: All calls are blocked immediately, no retry attempts, very fast response (< 1
 A: After 30 seconds, it transitions to HALF_OPEN and allows test calls. If successful, it closes. If failed, it opens again.
 
 **Q: Can I disable Retry or Circuit Breaker?**
-A: Yes, set `resilience4j.retry-enabled: false` or `resilience4j.circuit-breaker-enabled: false` in `application.yml`.
+A: Yes, comment out the annotations in `NotificationService.java` or configure YAML to effectively disable them. See `test/HOW_TO_DISABLE.md` for detailed instructions.
 
 ## Tips for Presenting
 
