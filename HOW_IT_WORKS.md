@@ -28,6 +28,24 @@ This project uses:
 - **Consul**: Service registry and discovery
 - **Spring Cloud Gateway**: API Gateway with dynamic routing
 
+### Key Distinctions: Who Does What?
+
+It's important to understand the **clear separation of responsibilities**:
+
+| Component | Responsibility |
+|-----------|---------------|
+| **Consul** | • Maintains service catalog<br/>• Stores service locations (IP, port)<br/>• Performs health checks<br/>• Provides service discovery API |
+| **Spring Cloud Gateway** | • Routes HTTP requests<br/>• Load balances across instances<br/>• Transforms requests/responses<br/>• Single entry point for clients<br/>• Queries Consul to discover service locations |
+
+**In Simple Terms:**
+- **Consul** = "Yellow Pages" (directory of services)
+- **Gateway** = "Traffic Controller" (routes and balances traffic)
+
+**How They Work Together:**
+1. Services register with **Consul** (tell Consul where they are)
+2. **Gateway** queries **Consul** to find services (ask Consul where services are)
+3. **Gateway** routes requests to services (does the actual routing)
+
 ### Architecture Overview
 
 ```mermaid
@@ -60,12 +78,22 @@ graph TB
 - **Key/Value Store**: Configuration storage
 - **Multi-Datacenter**: Supports distributed deployments
 
+### Consul's Role: Service Registry
+
+Consul is a **service registry** - think of it as a "phone book" for services.
+
+**What Consul Does:**
+- Stores service locations (IP addresses, ports)
+- Maintains a catalog of all services
+- Performs health checks on services
+- Provides an API to query service locations
+
 ### How Consul Works
 
-1. **Service Registration**: When a service starts, it registers itself with Consul
-2. **Service Discovery**: Services query Consul to find other services
-3. **Health Checks**: Consul periodically checks if services are healthy
-4. **Service Catalog**: Consul maintains a catalog of all registered services
+1. **Service Registration**: When a service starts, it registers itself with Consul (tells Consul "I'm here at IP X, port Y")
+2. **Service Discovery**: Services query Consul to find other services (ask Consul "Where is service Z?")
+3. **Health Checks**: Consul periodically checks if services are healthy (monitors service status)
+4. **Service Catalog**: Consul maintains a catalog of all registered services (the "phone book")
 
 ### Consul in This Project
 
@@ -92,6 +120,22 @@ consul:
 - **Service Discovery Integration**: Works with Consul, Eureka, etc.
 - **Filters**: Request/response transformation
 - **Circuit Breaker**: Resilience patterns
+
+### Gateway's Role: Router and Load Balancer
+
+Gateway is the **traffic controller** - it routes requests, but it needs Consul to know where services are.
+
+**What Gateway Does:**
+- Routes HTTP requests to backend services
+- Load balances across multiple service instances
+- Transforms requests/responses (e.g., path rewriting)
+- Acts as single entry point for all clients
+- Queries Consul to discover service locations
+
+**How Gateway Uses Consul:**
+- Gateway queries Consul: "Where is user-service?"
+- Consul responds: "user-service is at 172.18.0.4:8081"
+- Gateway then routes the request to that location
 
 ### Gateway Configuration
 
