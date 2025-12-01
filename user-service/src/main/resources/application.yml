@@ -81,6 +81,10 @@ management:
     health:
       show-details: always
 
+springdoc:
+  swagger-ui:
+    enabled: true
+
 logging:
   level:
     com.example.userservice: INFO
