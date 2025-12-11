@@ -33,10 +33,35 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,gateway
+        include: "*"  # Enable all actuator endpoints
   endpoint:
     health:
       show-details: always
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
+    os:
+      enabled: true
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: Spring Cloud Gateway with Consul service discovery
+    version: 1.0.0
+  java:
+    version: "17"
+  spring:
+    boot:
+      version: "3.2.0"
+    cloud:
+      version: "2023.0.0"
+  features:
+    - Service Discovery (Consul)
+    - Dynamic Routing
+    - Load Balancing
+    - Request Filtering
 
 logging:
   level:
